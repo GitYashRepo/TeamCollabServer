@@ -1,23 +1,11 @@
-import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
 // In-memory blacklist for demo purposes (consider Redis for production)
-const tokenBlacklist = new Set<string>();
+const tokenBlacklist = new Set();
 
-export const blacklistToken = (token: string) => tokenBlacklist.add(token);
+export const blacklistToken = (token) => tokenBlacklist.add(token);
 
-export interface JwtPayload {
-  id: string;
-  email: string;
-  role: string;
-}
-
-// Extend Express Request with user payload
-export interface AuthRequest extends Request {
-  user?: JwtPayload;
-}
-
-const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => {
+const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : undefined;
 
@@ -26,7 +14,7 @@ const authMiddleware = (req: AuthRequest, res: Response, next: NextFunction) => 
 
   try {
     const secret = process.env.JWT_SECRET || "";
-    const decoded = jwt.verify(token, secret) as JwtPayload;
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();
   } catch {

@@ -1,35 +1,35 @@
 {
-  "name": "server",
+  "name": "teamcollabtool",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/app.js",
+  "description": "A project where users can register, create tasks, assign them to other users, and collaborate via comments.",
+  "main": "app.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/app.ts",
-    "build": "tsc",
-    "start": "node dist/app.js",
-    "vercel-build": "tsc"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitYashRepo/TeamCollabTool.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
-  "devDependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.3.0",
-    "nodemon": "^3.1.10",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+  "bugs": {
+    "url": "https://github.com/GitYashRepo/TeamCollabTool/issues"
   },
+  "homepage": "https://github.com/GitYashRepo/TeamCollabTool#readme",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.18.0",
-    "mongoose": "^8.17.1"
+    "mongoose": "^8.17.1",
+    "nodemon": "^3.1.10",
+    "path": "^0.12.7"
   }
 }
