@@ -7,12 +7,12 @@ import cookieParser from "cookie-parser";
 import expressSession from "express-session";
 
 // MongoDB Connection
-import connectToDb from "./Config/db";
+import connectToDb from "./Config/db.js";
 
 // Routes
-import indexRouter from './Routes/Index';
-import TaskRouter from './Routes/Task';
-import AuthRouter from './Routes/Auth';
+import indexRouter from './Routes/Index.js';
+import TaskRouter from './Routes/Task.js';
+import AuthRouter from './Routes/Auth.js';
 
 // --- MIDDLEWARES ---
 // ✅ Cookie parser FIRST

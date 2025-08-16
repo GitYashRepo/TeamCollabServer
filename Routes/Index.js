@@ -3,5 +3,7 @@ import Router from "express";
 const router = Router();
 
 router.get("/", (req, res) => {
-    res.send('Hello, Team Collaboration Tool');
+    res.send('Hello, Collaboration App!');
 });
+
+export default router;

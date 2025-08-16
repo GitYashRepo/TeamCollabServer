@@ -1,6 +1,5 @@
-import Task from "../Models/Task";
-import Comment from "../Models/Comment";
-import authMiddleware, {  } from "../Middleware/Auth";
+import Task from "../Models/Task.js";
+import Comment from "../Models/Comment.js";
 
 /**
  * @route POST /tasks

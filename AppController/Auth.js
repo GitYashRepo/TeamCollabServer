@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../Models/User";
-import { blacklistToken } from "../Middleware/Auth";
+import User from "../Models/User.js";
+import { blacklistToken } from "../Middleware/Auth.js";
 
 /**
  * @route POST /auth/signup
