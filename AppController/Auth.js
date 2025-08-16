@@ -1,15 +1,15 @@
-import { Router, Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import User from "../models/User";
-import { blacklistToken } from "../middleware/Auth";
+import User from "../Models/User.js";
+import { blacklistToken } from "../Middleware/Auth.js";
 
-const router = Router();
-
-// POST /auth/signup
-router.post("/signup", async (req: Request, res: Response) => {
+/**
+ * @route POST /auth/signup
+ * @desc Create a new user
+*/
+const Signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body as { name: string; email: string; password: string; role?: string };
+    const { name, email, password, role } = req.body
 
     if (!name || !email || !password) return res.status(400).json({ message: "name, email, password required" });
 
@@ -23,12 +23,15 @@ router.post("/signup", async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(500).json({ message: "Signup failed", error: String(err) });
   }
-});
+};
 
-// POST /auth/login
-router.post("/login", async (req: Request, res: Response) => {
+/**
+ * @route POST /auth/login
+ * @desc Login a user
+*/
+const Login = async (req, res) => {
   try {
-    const { email, password } = req.body as { email: string; password: string };
+    const { email, password } = req.body
     const user = await User.findOne({ email });
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
@@ -40,15 +43,22 @@ router.post("/login", async (req: Request, res: Response) => {
   } catch (err) {
     return res.status(500).json({ message: "Login failed", error: String(err) });
   }
-});
+};
 
-// POST /auth/logout (blacklists current token)
-router.post("/logout", (req: Request, res: Response) => {
+/**
+ * @route POST /auth/logout
+ * @desc Logout a user || (blacklists current token)
+*/
+const Logout = (req, res) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.startsWith("Bearer ") ? authHeader.split(" ")[1] : undefined;
   if (!token) return res.status(400).json({ message: "No token provided" });
   blacklistToken(token);
   return res.json({ message: "Logged out" });
-});
+};
 
-export default router;
+export {
+  Signup,
+  Login,
+  Logout
+}

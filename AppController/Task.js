@@ -1,43 +1,39 @@
-import { Router, Request, Response } from "express";
-import Task from "../models/Task";
-import Comment from "../models/Comment";
-import authMiddleware, { AuthRequest } from "../middleware/Auth";
-
-const router = Router();
+import Task from "../Models/Task.js";
+import Comment from "../Models/Comment.js";
 
 /**
  * @route POST /tasks
  * @desc Create a new task
  */
-router.post("/", authMiddleware, async (req: AuthRequest, res: Response) => {
-  try {
-    const { title, description, assignedTo } = req.body;
+const CreateNewTask = async (req , res ) => {
+    try {
+      const { title, description, assignedTo } = req.body;
 
-    const task = new Task({
-      title,
-      description,
-      status: "pending",
-      createdBy: req.user?.id,
-      assignedTo,
-    });
+      const task = new Task({
+        title,
+        description,
+        status: "pending",
+        createdBy: req.user.id,
+        assignedTo,
+      });
 
-    await task.save();
-    res.status(201).json(task);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+      await task.save();
+      res.status(201).json(task);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error });
+    }
   }
-});
 
 /**
  * @route GET /tasks
  * @desc Get tasks for logged-in user, optional filter by status
  */
-router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
+const GetTasks = async (req , res ) => {
   try {
-    const status = req.query.status as string | undefined;
+    const status = req.query.status
 
-    const query: any = {
-      $or: [{ createdBy: req.user?.id }, { assignedTo: req.user?.id }],
+    const query = {
+      $or: [{ createdBy: req.user.id }, { assignedTo: req.user.id }],
     };
 
     if (status) {
@@ -52,13 +48,13 @@ router.get("/", authMiddleware, async (req: AuthRequest, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
-});
+};
 
 /**
  * @route PUT /tasks/:id
  * @desc Update task details or status
  */
-router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
+const UpdateTask = async (req , res ) => {
   try {
     const { id } = req.params;
     const { title, description, status, assignedTo } = req.body;
@@ -71,8 +67,8 @@ router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
 
     // Only task creator or assigned user can update
     if (
-      task.createdBy.toString() !== req.user?.id &&
-      task.assignedTo?.toString() !== req.user?.id
+      task.createdBy.toString() !== req.user.id &&
+      task.assignedTo?.toString() !== req.user.id
     ) {
       return res.status(403).json({ message: "Not authorized" });
     }
@@ -87,16 +83,13 @@ router.put("/:id", authMiddleware, async (req: AuthRequest, res: Response) => {
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
-});
+};
 
 /**
  * @route POST /tasks/:id/comments
  * @desc Add comment to a task
  */
-router.post(
-  "/:id/comments",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
+const AddComment = async (req , res ) => {
     try {
       const { id } = req.params;
       const { text } = req.body;
@@ -109,7 +102,7 @@ router.post(
       const comment = new Comment({
         text,
         taskId: id,
-        userId: req.user?.id,
+        userId: req.user.id,
       });
 
       await comment.save();
@@ -117,17 +110,13 @@ router.post(
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
     }
-  }
-);
+  };
 
 /**
  * @route GET /tasks/:id/comments
  * @desc Get comments for a task
  */
-router.get(
-  "/:id/comments",
-  authMiddleware,
-  async (req: AuthRequest, res: Response) => {
+const GetComments = async (req , res ) => {
     try {
       const { id } = req.params;
 
@@ -140,7 +129,14 @@ router.get(
     } catch (error) {
       res.status(500).json({ message: "Server error", error });
     }
-  }
-);
+  };
 
-export default router;
+
+
+export {
+    CreateNewTask,
+    GetTasks,
+    UpdateTask,
+    AddComment,
+    GetComments
+}
