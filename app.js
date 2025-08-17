@@ -45,8 +45,6 @@ app.use(expressSession({
 // --- START SERVER AFTER DB CONNECTS ---
 const port = process.env.PORT || 4040;
 
-const startServer = async () => {
-  try {
     await connectToDb(); // ✅ wait for MongoDB before loading routes
 
     // Routes
@@ -57,10 +55,3 @@ const startServer = async () => {
     app.listen(port, () => {
       console.log(`🚀 Server started on http://localhost:${port}`);
     });
-  } catch (err) {
-    console.error("❌ Failed to start server:", err.message);
-    process.exit(1);
-  }
-};
-
-startServer();
