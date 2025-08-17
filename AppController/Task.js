@@ -72,36 +72,47 @@ const GetTasks = async (req , res ) => {
  * @route PUT /tasks/:id
  * @desc Update task details or status
  */
-const UpdateTask = async (req , res ) => {
-  try {
-    const { id } = req.params;
-    const { title, description, status, assignedTo } = req.body;
+const UpdateTask = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { title, description, status, assignedTo } = req.body;
 
-    const task = await Task.findById(id);
+      const task = await Task.findById(id);
+      if (!task) {
+        return res.status(404).json({ message: "Task not found" });
+      }
 
-    if (!task) {
-      return res.status(404).json({ message: "Task not found" });
+      // Only task creator or assigned user can update
+      if (
+        task.createdBy.toString() !== req.user.id &&
+        task.assignedTo?.toString() !== req.user.id
+      ) {
+        return res.status(403).json({ message: "Not authorized" });
+      }
+
+      if (title) task.title = title;
+      if (description) task.description = description;
+      if (status) task.status = status;
+
+      if (assignedTo) {
+        if (mongoose.Types.ObjectId.isValid(assignedTo)) {
+          task.assignedTo = assignedTo;
+        } else {
+          const user = await User.findOne({ email: assignedTo });
+          if (!user) {
+            return res.status(404).json({ message: "Assigned user not found" });
+          }
+          task.assignedTo = user._id;
+        }
+      }
+
+      await task.save();
+      res.json(task);
+    } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
     }
-
-    // Only task creator or assigned user can update
-    if (
-      task.createdBy.toString() !== req.user.id &&
-      task.assignedTo?.toString() !== req.user.id
-    ) {
-      return res.status(403).json({ message: "Not authorized" });
-    }
-
-    if (title) task.title = title;
-    if (description) task.description = description;
-    if (status) task.status = status;
-    if (assignedTo) task.assignedTo = assignedTo;
-
-    await task.save();
-    res.json(task);
-  } catch (error) {
-    res.status(500).json({ message: "Server error", error });
-  }
 };
+
 
 /**
  * @route POST /tasks/:id/comments
