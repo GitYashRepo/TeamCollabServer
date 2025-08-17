@@ -19,7 +19,7 @@ import AuthRouter from './Routes/Auth.js';
 app.use(cookieParser());
 // ✅ CORS
 const corsOptions = {
-    origin: ["https://team-collab-dusky.vercel.app"],
+    origin: ["https://team-collab-dusky.vercel.app","http://localhost:3000"],
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
 };
