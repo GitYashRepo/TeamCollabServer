@@ -42,16 +42,17 @@ app.use(expressSession({
     },
 }));
 
-// --- START SERVER AFTER DB CONNECTS ---
-const port = process.env.PORT || 4040;
 
-    await connectToDb(); // ✅ wait for MongoDB before loading routes
+connectToDb(); // ✅ wait for MongoDB before loading routes
 
     // Routes
     app.use("/", indexRouter);
     app.use("/tasks", TaskRouter);
     app.use("/auth", AuthRouter);
 
-    app.listen(port, () => {
-      console.log(`🚀 Server started on http://localhost:${port}`);
-    });
+// --- START SERVER AFTER DB CONNECTS ---
+const port = process.env.PORT || 4040;
+
+app.listen(port, () => {
+  console.log(`🚀 Server started on http://localhost:${port}`);
+});
