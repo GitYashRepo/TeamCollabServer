@@ -1,5 +1,7 @@
 import Task from "../Models/Task.js";
 import Comment from "../Models/Comment.js";
+import User from "../Models/User.js";
+import mongoose from "mongoose";
 
 /**
  * @route POST /tasks
@@ -9,18 +11,34 @@ const CreateNewTask = async (req , res ) => {
     try {
       const { title, description, assignedTo } = req.body;
 
+      let assignedUserId = null;
+
+    if (assignedTo) {
+      if (mongoose.Types.ObjectId.isValid(assignedTo)) {
+        // If frontend sent ObjectId
+        assignedUserId = assignedTo;
+      } else {
+        // If frontend sent an email, find the user
+        const user = await User.findOne({ email: assignedTo });
+        if (!user) {
+          return res.status(404).json({ message: "Assigned user not found" });
+        }
+        assignedUserId = user._id;
+      }
+    }
+
       const task = new Task({
         title,
         description,
         status: "pending",
         createdBy: req.user.id,
-        assignedTo,
+        assignedTo: assignedUserId,
       });
 
       await task.save();
       res.status(201).json(task);
     } catch (error) {
-      res.status(500).json({ message: "Server error", error });
+      res.status(500).json({ message: "Server error", error: error.message });
     }
   }
 
